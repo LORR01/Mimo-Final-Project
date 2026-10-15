@@ -1,40 +1,58 @@
-# Mimo — Flutter
+# Mimo
 
-อัปเดตเอกสาร: 16 ตุลาคม 2026
+Mimo คือแอปคู่หูคอมพิวเตอร์สำหรับดูสถานะเครื่อง ส่งคีย์ลัด รับข้อมูลคลิปบอร์ด และส่งไฟล์จากโทรศัพท์ไปยัง Windows PC ผ่านเครือข่ายส่วนตัว Tailscale พัฒนาด้วย Flutter พร้อม Mimo Agent ที่ทำงานบนคอมพิวเตอร์แต่ละเครื่อง
 
-แอป Flutter สำหรับเลือก PC ใน Tailscale ดูสถานะเครื่อง และส่งคีย์ลัดผ่าน Mimo Agent บน Windows โฟลเดอร์ `mimo_flutter` เป็น repository root สำหรับ GitHub และทำงานแยกจาก prototype HTML เดิม UI ใช้ Flutter widgets ไม่ใช้ WebView หรือ Node.js runtime
+## ความสามารถ
 
-ผู้รับช่วงต่อให้อ่าน [handoff.md](handoff.md) แล้วดู [ผลตรวจสอบ](docs/VALIDATION.md) และ [หลักฐาน build](docs/build-evidence.json) เอกสารผลตรวจสอบส่วนท้ายคือสถานะล่าสุด ข้อความ read-only เก่าเป็นประวัติการพัฒนา
-
-## สถานะปัจจุบัน
-
-| ส่วน | การทำงานและข้อจำกัด |
+| ฟีเจอร์ | การใช้งาน |
 |---|---|
-| Android / Tailscale | เปิดแอป Tailscale ที่ติดตั้งไว้ให้ผู้ใช้เข้าสู่ระบบ กลับ Mimo แล้วใช้ตัวตนผ่าน HTTPS ของ Agent ไม่กรอกรหัสผ่าน Tailscale ใน Mimo |
-| รายการเครื่อง | Agent อ่าน Tailscale CLI จริง กรองเครื่องที่เปิดแอปด้วย stable ID และกรองเครื่องที่เพิ่มแล้ว ไม่ถือว่าออนไลน์แปลว่ามี Agent |
-| Devices | เพิ่ม/ตั้งชื่อ/เปลี่ยนชื่อ/เลือก/ลบสมาชิก Mimo โดยไม่เปลี่ยนชื่อหรือลบเครื่องใน Tailscale |
-| Status | CPU/GPU/RAM จริง กราฟรายวันแตะหรือชี้เพื่ออ่านเวลา ประวัติสะสมเฉพาะช่วงที่ Agent สังเกตได้ |
-| อุณหภูมิ | NVIDIA GPU อ่านจริงจาก nvidia-smi; CPU ต้องมี sensor provider ที่อ่านได้ ไม่มีก็แสดง — |
-| Keys / ORDER | เพิ่ม/แก้ไข/ลบคีย์ Pin สูงสุด 4 ปุ่มต่อเครื่อง Home แสดง 2 ปุ่มแรก แตะ ORDER ดูทั้งหมด |
-| รับชุดคีย์ | แตะเลือกทีละปุ่ม แตะซ้ำเพื่อยกเลิก แล้วกดยืนยัน รองรับสูงสุด 6 คีย์ |
-| ส่งคีย์จริง | Windows SendInput เมื่อเปิด Agent ด้วย --enable-commands มี auth, target/freshness checks, dedup และ rate limit |
-| Clipboard | ดึงข้อความ/ลิงก์/รูปภาพ/เอกสาร/ตารางจาก PC จริง รายการทั่วไป30 นาที ส่วน Favorite เก็บถาวร มีปุ่มบันทึกไฟล์ |
-| Files | ส่งให้ PC ที่เลือกจริง สูงสุด 100 MB บันทึกใน Downloads/Mimo และยืนยันเมื่อรับครบ |
-| Theme / ข้อมูล | dark/light/system, membership/aliases/config/pins เก็บ local preferences ไม่มี account sync |
+| จัดการอุปกรณ์ | ค้นหาเครื่องใน Tailscale เพิ่มเข้ารายการ ตั้งชื่อแสดง และสลับเครื่องที่ต้องการใช้งาน |
+| ดูสถานะเครื่อง | ดู CPU, GPU, RAM, อุณหภูมิที่อ่านได้ และประวัติเวลาการใช้งาน พร้อมแตะกราฟเพื่อดูเวลาแต่ละวัน |
+| คีย์ลัด | สร้างชุดคีย์ด้วยแป้นพิมพ์บนหน้าจอ เลือกทีละปุ่ม แล้วกดยืนยันเพื่อบันทึก |
+| ORDER | ปักหมุดคีย์ลัดได้สูงสุด 4 ปุ่มต่อเครื่อง หน้าแรกแสดง 2 ปุ่มแรก และแตะ ORDER เพื่อดูทั้งหมด |
+| ส่งไฟล์ | ส่งไฟล์ไปยัง PC ที่เลือกอยู่ รองรับสูงสุด 100 MB ต่อไฟล์ เก็บใน `Downloads/Mimo` ของ PC |
+| คลิปบอร์ด | ดูข้อความ ลิงก์ รูปภาพ เอกสาร และตารางจาก PC พร้อมบันทึกไฟล์แนบ |
+| Favorite | เก็บรายการคลิปบอร์ดไว้จนกว่าจะถอน Favorite หรือลบเอง |
+| การแจ้งเตือน | แจ้งคลิปบอร์ดใหม่และสถานะออนไลน์ของอุปกรณ์ภายในแอปขณะเปิดใช้งาน |
+| ธีม | รองรับธีมสว่าง มืด และตามระบบ |
 
-ค่าเริ่มต้นเป็น live mode โหมดตัวอย่างต้องเปิดด้วย `--dart-define=MIMO_DEMO=true` เท่านั้น ไม่เติม fixture เป็นค่าจริงเมื่ออ่านข้อมูลไม่ได้
+การเลือกอุปกรณ์ในส่วนหัวกำหนดข้อมูลและปลายทางของการทำงาน หากเครื่องออฟไลน์หรือ Agent ไม่พร้อม แอปจะแสดงสถานะและปิดการส่งไฟล์หรือคำสั่ง
 
-## เครื่องมือที่ใช้และข้อกำหนด
+## ระบบทำงานอย่างไร
 
-รอบที่ตรวจสอบใช้ Flutter **3.47.7 stable**, Dart **3.13.5**, Windows, Java **25**, Android platform/build-tools **36** และ NDK **28.2.13676358** เก็บ `pubspec.lock` เพื่อทำซ้ำ dependencies เครื่องใหม่ต้องติดตั้ง Flutter และ Android toolchain เอง iOS ต้องใช้ macOS/Xcode
+```text
+Mimo บน Android / Flutter Web
+             │
+             │ HTTPS ภายในเครือข่าย Tailscale
+             ▼
+       Mimo Agent บน Windows
+             ├─ ค้นหารายการเครื่องผ่าน Tailscale CLI
+             ├─ อ่านสถานะ CPU / GPU / RAM และเซนเซอร์
+             ├─ ส่งคีย์ลัดไปยังหน้าต่างที่กำลังใช้งาน
+             ├─ อ่านคลิปบอร์ดและจัดเก็บ Favorite
+             └─ รับไฟล์ลง Downloads/Mimo
+```
 
-แต่ละ PC ที่จะอ่านค่าหรือส่งคีย์ต้องติดตั้ง Tailscale, เข้าสู่ระบบ และรัน Mimo Agent ของตนเอง โทรศัพท์ต้องเปิด Tailscale VPN และมีสิทธิ์เข้าถึงตาม tailnet policy สำหรับระบบปัจจุบันการเข้าสู่ระบบอัตโนมัติยอมรับบัญชีเจ้าของ PC เท่านั้น
+Tailscale เชื่อมอุปกรณ์เข้ากับเครือข่ายส่วนตัว ส่วน Mimo Agent ให้บริการข้อมูลและคำสั่งบน PC เครื่องที่ออนไลน์ใน Tailscale จึงอาจยังไม่พร้อมใช้งานกับ Mimo หากไม่ได้เปิด Agent
 
-APK ทดสอบที่ build แล้วอยู่ `build/deliverables/Mimo-testing.apk` ส่วน PC package อยู่ `build/deliverables/Mimo-PC-Agent.zip` โฟลเดอร์ build ถูก ignore จึงไม่ตามไปกับ Git clone
+อุปกรณ์อ้างอิงด้วยรหัสเครื่อง การเปลี่ยนชื่อใน Mimo มีผลเฉพาะชื่อแสดงในแอป และการลบออกจากรายการ Mimo ไม่ลบเครื่องออกจาก Tailscale
 
-## เริ่มระบบจริง
+## สิ่งที่ต้องเตรียม
 
-รันคำสั่งจาก repository root:
+- โทรศัพท์ Android 7.0 ขึ้นไป พร้อมแอป Tailscale
+- Windows PC พร้อม Tailscale และ Mimo Agent สำหรับทุกเครื่องที่ต้องการใช้งาน
+- โทรศัพท์และ PC เชื่อมต่อ Tailscale ด้วยบัญชีเจ้าของ PC และได้รับอนุญาตให้เข้าถึงกันตามนโยบายเครือข่าย
+- เปิด Tailscale Serve/HTTPS สำหรับ PC ที่รัน Agent
+
+การสร้างแอปจาก source ต้องติดตั้ง Flutter และ Android SDK ส่วนการสร้าง iOS ต้องใช้ macOS และ Xcode โดย iOS ยังไม่ได้รับการทดสอบใช้งานจริง รุ่นเครื่องมือและผลตรวจสอบอยู่ใน [บันทึกการตรวจสอบ](docs/VALIDATION.md)
+
+## ติดตั้งและเริ่มใช้งาน
+
+### 1. เปิด Mimo Agent บน PC
+
+หากมีชุด Mimo PC Agent ให้แตกไฟล์ทั้งชุด แล้วเปิด `Start Mimo Agent.cmd` ค้างไว้ ดูรายละเอียดใน [คู่มือ PC Agent](docs/PC_AGENT_SETUP.md)
+
+สำหรับการรันจาก source ให้เปิด PowerShell ที่ root ของโปรเจกต์:
 
 ```powershell
 flutter pub get
@@ -42,175 +60,127 @@ flutter build web --release
 dart run tool/mimo_agent.dart --enable-commands --enable-sharing
 ```
 
-Agent bind เฉพาะ `127.0.0.1:8765` เปิด terminal อีกหน้าสำหรับ HTTPS ภายใน tailnet:
+Agent รับการเชื่อมต่อที่ `127.0.0.1:8765` โดย `--enable-commands` เปิดการส่งคีย์ลัด และ `--enable-sharing` เปิดการอ่านคลิปบอร์ดกับรับไฟล์ หากต้องการดูสถานะเครื่องอย่างเดียว ให้รันโดยไม่ใส่ทั้งสองตัวเลือก
+
+### 2. เปิด HTTPS ผ่าน Tailscale
+
+เปิด PowerShell อีกหน้าหนึ่ง ตรวจสอบบริการเดิมก่อน แล้วเปิดเส้นทางสำหรับ Mimo:
 
 ```powershell
 tailscale serve status
 tailscale serve --bg --https=8443 http://127.0.0.1:8765
 ```
 
-ตรวจว่าพอร์ต 8443 ไม่ชนบริการอื่นก่อนเปลี่ยน หาก Tailscale ขอเปิด Serve/HTTPS ให้เจ้าของบัญชีทำตามหน้าอนุมัติ ใช้ URL ที่ CLI รายงาน เช่น `https://your-pc.your-tailnet.ts.net:8443` ไม่ใช้ Funnel และไม่ reset บริการ Serve ทั้งเครื่อง การตั้งค่า Serve คงอยู่ แต่ Agent ต้องเปิดค้างไว้
+ใช้ URL ที่ Tailscale รายงาน เช่น `https://your-pc.your-tailnet.ts.net:8443` หากระบบขอเปิด Serve/HTTPS ให้ดำเนินการตามลิงก์ที่แสดง ตรวจสอบว่าพอร์ต 8443 ว่างและไม่แทนที่บริการอื่น การตั้งค่า Serve คงอยู่หลังปิด terminal แต่ Mimo Agent ต้องเปิดทำงานอยู่
 
-เปิด URL นี้เพื่อใช้ Flutter Web กับ Agent แบบ origin เดียวกัน สำหรับอ่านค่าอย่างเดียวให้รัน Agent โดยไม่ใส่ `--enable-commands` รหัสจับคู่ localhost สำรองสร้างใน `.local/agent/pairing.local.json` เมื่อเริ่ม Agent ห้ามเผยแพร่ไฟล์นี้
+เปิด URL นี้จากอุปกรณ์ใน Tailscale เพื่อใช้ Flutter Web หรือใช้เป็น gateway สำหรับแอป Android โดยไม่ต้องเปิดบริการออกสู่อินเทอร์เน็ตสาธารณะ
 
-หากใช้ PC zip ให้แตกทั้งชุดแล้วเปิด `Start Mimo Agent.cmd` แทน Dart command ข้างบน ดู [PC_AGENT_SETUP.md](docs/PC_AGENT_SETUP.md) ห้ามเปิด Agent สองตัวชนพอร์ต 8765
+### 3. เชื่อมต่อจากโทรศัพท์
 
-### Android และการเข้าสู่ระบบ
+1. ติดตั้ง Mimo APK ที่สร้างสำหรับ gateway ของ PC และแอป Tailscale
+2. เข้าสู่ระบบและเปิดการเชื่อมต่อใน Tailscale
+3. เปิด Mimo แล้วเลือกเชื่อมต่อด้วย Tailscale หากแอปพาไป Tailscale ให้เชื่อมต่อแล้วกลับมายัง Mimo
+4. ค้นหาอุปกรณ์ เลือก PC ตั้งชื่อแสดง แล้วบันทึก
+5. เลือกเครื่องจากส่วนหัวเพื่อดูสถานะ ใช้คีย์ลัด ส่งไฟล์ หรือดูคลิปบอร์ด
 
-1. ติดตั้ง Mimo APK และแอป Tailscale ทางการบนโทรศัพท์ เชื่อม tailnet ด้วยบัญชีเจ้าของ PC
-2. เปิด Mimo เลือกเข้าสู่ระบบด้วย Tailscale หากแอปเปิด Tailscale ให้ทำการเข้าสู่ระบบ/เชื่อมต่อแล้วกลับ Mimo
-3. APK ตั้งค่า gateway ของ PC ไว้ตั้งแต่ build แล้ว เมื่อกลับจาก Tailscale จะแสดงรายการเครื่องอัตโนมัติ ไม่ต้องกรอก URL หรือรหัสจับคู่
-4. ค้นหาเครื่อง เลือก PC ตั้งชื่อแสดงแล้วบันทึก จากนั้นเลือกเครื่องที่ Header
+แอป Android ใช้ gateway URL ที่กำหนดตอน build จึงไม่มีช่องให้กรอก URL ในขั้นตอนปกติ หากเปลี่ยน PC ที่เป็น gateway ต้องสร้าง APK ด้วย URL ใหม่ แต่ละ PC เพิ่มเติมต้องมี Agent และ Serve ของตนเองที่พอร์ต 8443 ปัจจุบันยังไม่มีระบบสลับ gateway อัตโนมัติ
+
+## การใช้งานแต่ละส่วน
+
+### Devices และ Status
+
+เพิ่มเครื่องจากรายการที่ค้นพบ แล้วเลือกเครื่องที่ต้องการใช้งาน ชื่อแสดงแก้ไขได้ภายหลัง และระบบไม่เพิ่มเครื่องเดิมซ้ำ หน้า Status แสดงข้อมูลของเครื่องที่เลือก ประวัติเวลาการใช้งานสะสมเฉพาะช่วงที่ Agent สามารถสังเกตข้อมูลได้
+
+อุณหภูมิ CPU ต้องมีโปรแกรมอ่านเซนเซอร์ที่รองรับ เช่น LibreHardwareMonitor พร้อมสิทธิ์ที่จำเป็น ส่วน NVIDIA GPU ใช้ `nvidia-smi` เมื่ออ่านเซนเซอร์ไม่ได้จะแสดง `—`
+
+### Keys และ ORDER
+
+สร้างปุ่มในหน้า Keys ตั้งชื่อและเลือกคีย์ทีละปุ่ม เช่น `Ctrl` และ `C` จากนั้นกดยืนยัน รองรับสูงสุด 6 คีย์ต่อชุด ปักหมุดปุ่มที่ใช้บ่อยเพื่อเรียกจาก ORDER บนหน้าแรก
+
+เมื่อกดใช้งาน คีย์ลัดจะส่งไปยังหน้าต่างที่มี focus บน PC ที่เลือก Windows อาจปฏิเสธคำสั่งบนหน้าจอล็อก หน้าต่าง UAC หรือโปรแกรมที่มีสิทธิ์สูงกว่า Agent
+
+### Clipboard และ Favorite
+
+รายการทั่วไปเก็บไว้ 30 นาที รายการที่ติด Favorite เก็บถาวร รวมถึงไฟล์แนบ เมื่อถอน Favorite จะเริ่มนับอายุใหม่อีก 30 นาที การลบรายการจะลบสำเนาที่ Mimo เก็บไว้ โดยไม่ลบไฟล์ต้นฉบับหรือไฟล์ที่บันทึกเอง
+
+Favorite จาก PC เก็บบน PC เครื่องนั้น ไฟล์แนบที่ยังไม่ได้โหลดจึงต้องเชื่อมต่อ PC เพื่อเรียกดู รองรับไฟล์ที่คัดลอกจาก Explorer และรูปแบบคลิปบอร์ดที่รองรับ แต่ไฟล์แนบเสมือนจากบางโปรแกรมอาจอ่านไม่ได้
+
+### ส่งไฟล์และการแจ้งเตือน
+
+เลือก PC จากส่วนหัวก่อนกดเลือกไฟล์ แอปจะแจ้งสำเร็จเมื่อ PC รับไฟล์ครบ โดยไม่เขียนทับไฟล์เดิมและไม่เปิดไฟล์ที่รับอัตโนมัติ ดูการแจ้งเตือนคลิปบอร์ดใหม่และสถานะอุปกรณ์ได้จากกระดิ่ง การแจ้งเตือนทำงานขณะเปิด Mimo เท่านั้น
+
+## พัฒนาและ build
+
+### ทดลองหน้าจอด้วยข้อมูลจำลอง
 
 ```powershell
-flutter devices
-flutter run -d <device-id> --dart-define=MIMO_AGENT_URL=https://your-pc.your-tailnet.ts.net:8443
+flutter pub get
+flutter run -d chrome --dart-define=MIMO_DEMO=true
 ```
 
-APK ที่เตรียมบนเครื่องพัฒนาตั้ง gateway ของเครื่องพัฒนาแล้ว หากย้าย gateway ไป PC แรกเครื่องอื่น ให้ผู้พัฒนา build ด้วย -AgentUrl ของเครื่องนั้น โดยไม่ใส่ token ลง source รายการเครือข่ายมาจาก PC Agent ที่เรียก CLI ไม่ได้อ่านฐานข้อมูลส่วนตัวของแอป Tailscale Android หาก gateway แรกเข้าไม่ถึง ยังไม่มี automatic gateway failover
+โหมดปกติใช้ข้อมูลจาก Agent ส่วนโหมดจำลองใช้สำหรับทดลองหน้าจอและการโต้ตอบโดยไม่เชื่อม PC
 
-## Build APK และ PC Agent
+### Build Android APK
 
-ดับเบิลคลิก `Build APK.cmd` เพื่อรัน pub get → format → analyze → tests → build APK หาก checks ล้มเหลวจะหยุด หรือกำหนด URL เอง:
+บน Windows เปิด `Build APK.cmd` หรือระบุ gateway ด้วยคำสั่ง:
 
 ```powershell
 ./tool/build-apk.ps1 -AgentUrl https://your-pc.your-tailnet.ts.net:8443
 ```
 
-ส่ง `-FlutterPath` และ `-AndroidSdk` ได้เมื่อสคริปต์หา SDK ไม่พบ ผลลัพธ์เป็น **debug-signed testing APK** ยังไม่ใช่ production signing หรือ Play Store release Android package ปัจจุบันคือ `com.mimo.mimo_companion`, min SDK 24, target 36
+สคริปต์จะตรวจ format, analyze และ tests ก่อน build ผลลัพธ์อยู่ที่ `build/deliverables/Mimo-testing.apk` เป็น APK สำหรับทดสอบที่ลงนามด้วย debug key การเผยแพร่จริงต้องตั้งค่า release signing เพิ่มเติม สามารถระบุ `-FlutterPath` และ `-AndroidSdk` หากสคริปต์หา SDK ไม่พบ
 
-สร้าง executable ของ PC หลัง build web:
+### Build Windows Agent
 
 ```powershell
+flutter build web --release
 ./tool/build-agent.ps1 -DartPath dart
 ```
 
-ได้ไฟล์ใน `build/agent/` รวม executable, metric script, launcher, คู่มือ และ web build ถ้ามี สคริปต์นี้ไม่ได้สร้าง zip ให้เอง เมื่อต้องแพ็กให้เลือกเฉพาะไฟล์แจกจ่าย ห้ามรวม `.local/agent/` หรือ installer downloads ที่สร้างตอนใช้งาน
+ไฟล์แจกจ่ายอยู่ใน `build/agent/` ต้องเก็บ executable, launcher, `tool/` และ `build/` ที่สร้างขึ้นไว้ด้วยกัน สคริปต์ไม่ได้สร้าง ZIP ให้อัตโนมัติ
 
-### Path ภาษาไทยบน Windows
-
-พบ Flutter analyzer/shader compiler crash บน path non-ASCII ในเครื่องพัฒนา แนะนำ clone SDK และโปรเจกต์ไว้ path ภาษาอังกฤษ หรือใช้ temporary `subst` alias สำหรับทั้ง SDK และ project สคริปต์ APK รู้จัก alias ที่มีอยู่ แต่ไม่ควร commit drive letters หรือ SDK paths ของเครื่องหนึ่งลง repository
-
-`android/gradle.properties` ปิด Kotlin incremental caching เพื่อแก้ Pub cache บน C: กับ project alias คนละ drive อย่าเปิดคืนโดยไม่ทดสอบกรณีนี้
-
-## ทดลอง UI โดยไม่ต่อเครื่อง
-
-```powershell
-flutter run -d chrome --dart-define=MIMO_DEMO=true
-```
-
-ทดสอบผ่าน browser บนโทรศัพท์ใน Wi-Fi เดียวกันได้ด้วย:
-
-```powershell
-flutter run -d web-server --web-hostname <IPv4-Wi-Fi-PC> --web-port 3016 --dart-define=MIMO_DEMO=true
-```
-
-วิธีนี้เป็น Flutter Web โหมดจำลอง ไม่พิสูจน์ native Android หรือการเชื่อม Agent จริง ไม่ใช้ HTTP LAN ของ demo เป็นทางลัดสำหรับคำสั่ง PC จริง
-
-## โครงสร้างและเส้นทางข้อมูล
-
-```text
-lib/main.dart                   เริ่ม repository/store และเลือก live/demo
-lib/domain/models.dart          machine ID, aliases, Agent readiness, metrics
-lib/domain/shortcuts.dart       key allowlist, normalization, chord capture
-lib/data/services.dart          discovery/repository interfaces และ mocks
-lib/data/agent_client.dart      HTTPS sessions, discovery, target routing
-lib/data/tailscale_bridge.dart  MethodChannel เปิดแอป Tailscale บน Android
-lib/state/mimo_store.dart       state, guards, pins, actions, persistence
-lib/ui/mimo_app.dart            shell, header, onboarding, lifecycle
-lib/ui/screens.dart             หน้าจอหลัก (part ของ mimo_app.dart)
-lib/ui/sheets.dart              forms/modals (part ของ mimo_app.dart)
-lib/ui/chord_keyboard.dart      multi-touch PC keyboard
-lib/ui/design.dart              สี ฟอนต์ theme และองค์ประกอบร่วม
-android/                       Android platform และ Tailscale launch bridge
-assets/                        artwork, fonts, fixture และที่มา assets
- tool/mimo_agent.dart           entry point ของ Windows Agent
- tool/agent/server.dart         HTTP/auth/routes/guards/static web
- tool/agent/collector.dart      Tailscale, telemetry และ observed usage
- tool/agent/keys.dart           Windows SendInput FFI
- tool/agent/windows_metrics.ps1 trusted Windows metric collector
- tool/build-apk.ps1             ตรวจแล้ว build APK
- tool/build-agent.ps1           compile และจัดไฟล์ PC Agent
- test/                         store/widget/API/routing/optional live tests
- docs/                         คู่มือรายละเอียด หลักฐาน และภาพหน้าจอ
- handoff.md                    จุดเริ่มต้นสำหรับผู้รับช่วงต่อ
-```
-
-```text
-Flutter → MimoStore → AgentClient → Tailscale Serve HTTPS → Windows Agent
-                                                              ├─ Tailscale CLI: inventory / whois
-                                                              ├─ CIM / NVIDIA / sensor provider: metrics
-                                                              └─ SendInput: allowlisted keyboard chord
-```
-
-แต่ละ target PC ใช้ session แยก ตรวจ machine ID ก่อนอ่าน/ส่งคีย์ ไม่ส่ง gateway token ต่อไปอีกเครื่อง `machine.id` เป็น identity; hostname, alias และ IP เปลี่ยนได้ การตั้งชื่อใน Mimo ไม่เปลี่ยน Tailscale
-
-## Persistence และขอบเขตสิทธิ์
-
-`SharedPreferencesAsync` ใช้คีย์ `mimo:flutter_prototype:v1`, schemaVersion 1 เก็บ membership/aliases, active ID, per-device groups/buttons/bindings/pins, favorites, theme และ gateway URL มี queued snapshot writes และ `flush()` สำหรับทดสอบ ข้อมูลแยกตามแพลตฟอร์ม/browser origin ไม่ migrate HTML localStorage และไม่ sync ข้ามเครื่อง
-
-Sessions อยู่ใน memory ไม่เก็บ API token/password ลง frontend หรือ preferences Agent ตรวจ Serve identity, CLI whois และบัญชีเจ้าของ PC ก่อนออก session การเปิด commands เท่ากับเชื่อถืออุปกรณ์ Tailscale ที่ผ่านบัญชีเจ้าของตามเงื่อนไขนี้ ยังไม่มีสิทธิ์แยกต่อแอป Android คีย์ส่งไปหน้าต่างที่มี focus บน Windows; UAC, locked desktop หรือแอปที่สิทธิ์สูงกว่าอาจปฏิเสธ ไม่ bypass สิทธิ์ และไม่มี arbitrary shell endpoint
-
-## ทดสอบและหลักฐาน
+### ตรวจสอบ source
 
 ```powershell
 dart format --output=none --set-exit-if-changed lib test tool
 flutter analyze
 flutter test
-flutter test --dart-define=CAPTURE=true
 flutter build web --release
 ```
 
-ผลบันทึกล่าสุด: analyzer ผ่าน, tests 29 กลุ่มผ่าน, optional live tests 4 กลุ่มไม่รันใน default suite; build Web และ APK ผ่าน ตรวจลายเซ็น APK แล้ว ทดสอบ compiled PC Agent ผ่าน HTTPS จริงพร้อม F24 และอ่าน telemetry จริงได้
+GitHub Actions ตรวจ format, analyze, tests และ build Web ส่วนการตรวจเครื่องจริงและผลทดสอบ Android อธิบายใน [VALIDATION.md](docs/VALIDATION.md)
 
-ภาพสาธารณะ 55 PNG อยู่ `docs/screenshots/` เป็น Flutter widget renders รวม 320/390 px ไม่ใช่ภาพจากโทรศัพท์จริงและไม่ใช่ pixel-perfect Canva comparison ยังไม่ได้ทดสอบติดตั้ง APK/Tailscale return flow/multi-touch บนเครื่อง Android จริง หรือ target PC ตัวที่สอง รายละเอียด/ค่า SHA-256 อยู่ [VALIDATION.md](docs/VALIDATION.md) และ [build-evidence.json](docs/build-evidence.json) รอบแก้ login รุ่น 1.0.1+2 รัน regression suite และ build ใหม่
+## โครงสร้างโปรเจกต์
 
-CPU temperature ยังรอผู้ใช้เปิด LibreHardwareMonitor ด้วย Run as administrator แล้วแจ้งกลับ **ยังไม่ยืนยันว่าเปิดหรืออ่านค่าได้แล้ว** ส่วน GPU อ่านค่าจริงสำเร็จ เครื่องมือ sensor ไม่รวมใน APK/Agent zip ห้ามแทนด้วยค่าจำลองหรือปิด Windows protection เพื่อบังคับ driver
+| ตำแหน่ง | หน้าที่ |
+|---|---|
+| `lib/domain/` | โมเดลอุปกรณ์ สถานะ และกติกาคีย์ลัด |
+| `lib/data/` | เชื่อมต่อ Agent ค้นหาอุปกรณ์ และข้อมูลจำลอง |
+| `lib/state/` | สถานะแอป การเลือกเครื่อง การบันทึกค่า และการทำงานต่าง ๆ |
+| `lib/ui/` | หน้าจอ ส่วนหัว ฟอร์ม แป้นพิมพ์ และธีม |
+| `android/` | Android platform และการเปิดแอป Tailscale |
+| `tool/agent/` | Windows Agent, authentication, telemetry, clipboard, files และคีย์ลัด |
+| `tool/` | จุดเริ่ม Agent และสคริปต์ build |
+| `assets/` | มาสคอต ไอคอน ฟอนต์ และข้อมูลตัวอย่าง |
+| `test/` | การทดสอบ state, UI และ Agent |
+| `docs/` | คู่มือรายละเอียดและผลการตรวจสอบ |
 
-## เตรียม GitHub และเอกสารที่เกี่ยวข้อง
+## ข้อมูลและสิทธิ์การเข้าถึง
 
-Push เฉพาะ repository `mimo_flutter` เก็บ `pubspec.lock`; ไม่รวม `.tooling`, build, `.local`, pairing/session files, signing keys หรือ local SDK config ยังไม่ได้ commit, ตั้ง remote หรือ push แทนผู้ใช้ Workflow ใน `.github/workflows/flutter.yml` มี format/analyze/test/build web แต่ยังไม่ได้ยืนยันรันบน GitHub และไม่ได้ build Android ใน CI
+ชื่อแสดง รายการอุปกรณ์ ปุ่มปักหมุด และการตั้งค่าบันทึกไว้ในแอป โดยยังไม่ซิงก์ข้ามเครื่อง Session เก็บในหน่วยความจำ และไม่ต้องใส่ Tailscale API token ใน frontend
 
-- [handoff.md](handoff.md): invariants, งานค้าง และวิธีสานงาน
-- [Android / ORDER / commands](docs/ANDROID_AND_COMMANDS.md)
-- [การเชื่อมข้อมูลจริง](docs/LIVE_CONNECTION.md)
-- [คู่มือ PC package](docs/PC_AGENT_SETUP.md)
-- [ความเทียบเคียง prototype](docs/PARITY.md)
-- [ที่มา assets](assets/PROVENANCE.md)
+Agent ตรวจตัวตนอุปกรณ์ผ่าน Tailscale และยอมรับบัญชีเจ้าของ PC ตามเงื่อนไขของระบบ การเปิดส่งคีย์ลัดหรือแชร์ข้อมูลจึงให้สิทธิ์แก่อุปกรณ์ที่ผ่านการตรวจสอบดังกล่าว ยังไม่มีระบบอนุญาตแยกต่อแอป Android
 
-ฟอนต์ใช้ Poppins, Noto Sans Thai และ Lilita One พร้อม license แทน Binate ที่มีข้อจำกัดแจกจ่าย ภาพ Canva เป็น third-party artwork ตาม provenance การ build ผ่านไม่ได้ยืนยันสิทธิ์เผยแพร่ภาพเหล่านั้น
+ข้อมูลส่วนตัวของ Agent รวมถึง Favorite อยู่ใน `.local/agent/` ไม่ควรรวมใน source หรือชุดแจกจ่าย Repository ไม่รวม APK, SDK, build outputs, pairing/session files และ signing keys
 
-## แก้ไข login รุ่น 1.0.1+2
+## เอกสารเพิ่มเติม
 
-Agent รุ่นเก่าบังคับ whois.Node.MachineAuthorized=true แต่ CLI ของ Android peer จริงไม่ส่งฟิลด์นี้ จึงปฏิเสธโทรศัพท์ รุ่นนี้ตรวจ whois stable ID/owner ร่วมกับ IP และ current network map พร้อมปฏิเสธ explicit unauthorized, expired keys และสมาชิกที่ไม่ตรงเงื่อนไข
+- [คู่มือ PC Agent](docs/PC_AGENT_SETUP.md)
+- [การเชื่อมต่อและข้อมูลจริง](docs/LIVE_CONNECTION.md)
+- [Android และระบบคีย์ลัด](docs/ANDROID_AND_COMMANDS.md)
+- [ไฟล์ คลิปบอร์ด และการแจ้งเตือน](docs/SHARING_AND_NOTIFICATIONS.md)
+- [ผลการตรวจสอบและข้อจำกัด](docs/VALIDATION.md)
+- [เอกสารส่งต่องานสำหรับผู้พัฒนา](handoff.md)
+- [ที่มาและเงื่อนไขของภาพและฟอนต์](assets/PROVENANCE.md)
 
-หน้าปกติไม่มี Agent URL หรือช่อง pairing แล้ว กลับจาก Tailscale → ค้นหา → เลือก PC ได้เลย มีสถานะกำลังค้นหา ข้อผิดพลาด และลองใหม่ การเชื่อมซ้อนใช้ Future เดียวกัน ไม่คืน failure เงียบ ๆ หากค่าปลายทางเก่าติดต่อไม่ได้จะลอง gateway ที่ build ไว้
-
-ต้องอัปเดตทั้ง APK และ PC Agent เพราะสาเหตุหลักอยู่ที่ backend ด้วย การทดสอบใช้ lifecycle/MethodChannel fixtures และข้อมูล whois ของโทรศัพท์จริงผ่าน localhost ที่ใส่ Serve-format headers ยังไม่ได้ยืนยัน HTTP request ที่ส่งจากโทรศัพท์จริงในรอบนี้
-
-## รุ่น 1.1.0+3 — Files, Clipboard และการแจ้งเตือน
-
-อ่าน [SHARING_AND_NOTIFICATIONS.md](docs/SHARING_AND_NOTIFICATIONS.md) สำหรับขอบเขตล่าสุด ซึ่งแทนข้อความเก่าที่ระบุว่า file transport/PC clipboard ยังไม่ทำ
-
-- ส่งไฟล์จริงผ่าน HTTPS ไปยัง PC ที่เลือก รับสูงสุด 100 MB ไม่เขียนทับและไม่เปิดไฟล์เอง UI รอ receipt จาก PC ก่อนแจ้งสำเร็จ
-- Agent เปิดด้วย --enable-sharing จึงจะรับไฟล์และอ่าน clipboard; launcher ใหม่เปิดพร้อม --enable-commands แล้ว
-- Clipboard อ่าน Unicode text, links, PNG/DIB image, copied files ใน Explorer และ HTML/TSV tables อาจไม่ได้รองรับ virtual files ของทุกโปรแกรม เช่น attachment ที่ไม่ได้เป็นไฟล์จริงบนดิสก์
-- รายการและไฟล์แนบ clipboard อยู่ในหน่วยความจำ เก็บสูงสุด 30 นาทีจากเวลารับเข้า Mimo ทั้ง Agent และแอปตรวจ expiry ไม่มี raw clipboard history ใน live preferences ข้อความที่เพิ่มเองใน live mode ก็เป็นข้อมูลชั่วคราว
-- รูป/เอกสาร/ตารางมีปุ่มบันทึก ใช้ system save dialog; การหมดอายุไม่ลบต้นฉบับ ไม่เคลียร์ Windows clipboard และไม่ลบไฟล์ที่ผู้ใช้บันทึกเอง
-- แจ้งเตือนในแอปขณะเปิดใช้งานเท่านั้น มีจำนวนยังไม่อ่านและรายการในกระดิ่ง ไม่ใช้ Android background service การแจ้งเตือน clipboard ติดตาม PC ที่เลือกอยู่; สถานะ Tailscale ติดตามเครื่องที่เพิ่มไว้ ไม่แจ้งซ้ำทุก poll
-- แป้นคีย์ลัดเลือกทีละปุ่ม กดยืนยันเอง; ยกเลิกวิธีกดหลายปุ่มค้างพร้อมกันแล้วปล่อยเพื่อยืนยัน
-
-ทดสอบ real HTTPS upload แล้วตรวจ byte-for-byte บนดิสก์จริง และทดสอบตัวอ่าน clipboard Windows จริงโดยไม่แก้ clipboard ของผู้ใช้ การทดสอบชนิดข้อมูลครบ 5 หมวดและ expiry ใช้ fixture API กับนาฬิกาจำลอง ไม่ใช่การรอ 30 นาทีจริงหรือทดสอบคัดลอกจากทุกโปรแกรม การติดตั้ง APK และ system file dialogs บนโทรศัพท์จริงยังต้องตรวจ
-
-## Permanent Favorites and approved launcher icon — 1.1.1+4
-
-- User selected concept A with round orange glasses and a cheerful smile, then explicitly reverted the phone-waving revision: final icon has NO phone. Approved source: assets/branding/mimo-launcher.png (same as docs/design/icon-a-glasses-happy-v2.png).
-- Generated with built-in imagegen using the existing mascot as identity reference. Prompt: cheerful cream long-eared Mimo wearing round coral glasses, happy eyes and smile, two paws on coral desktop monitor, orange/black palette, no lettering or phone. Preview sheets/rejected variants stay under docs/design and are not launcher assets.
-- Reproduce platform resources with `dart run flutter_launcher_icons` using flutter_launcher_icons.yaml. Android adaptive background black, foreground inset16%; generated legacy densities, iOS icons and web icons. Production iOS build remains untested.
-- Favorite items no longer expire, including images/documents/tables. PC-sourced favorites persist metadata and binary attachments in .local/agent/favorites on that PC, excluded from source/package. Favorites bypass temporary count/byte eviction limits; disk capacity remains the limit and write failures are reported rather than pretending success.
-- Favorite metadata/local text are retained in app preferences so relaunch keeps the cards. PC attachments stay on the PC and require it online to retrieve if not cached; do not claim an offline phone attachment vault.
-- Unfavorite starts a NEW 30-minute expiry timer. Delete removes the Mimo archive item and stored attachment on the PC, not the original source file or user-saved copies. Deleting a PC-sourced item is now an authenticated backend DELETE, not merely hiding the local card.
-- New authenticated POST /v1/devices/{id}/clipboard/{clipId}/favorite with strict boolean {favorite: true/false}; DELETE /v1/devices/{id}/clipboard/{clipId}. Keep target/owner/session/sharing checks. Persistent writes are serialized, manifest replaced atomically, attachments flushed before success. Read-only Agent must not expose archived attachments without --enable-sharing.
-- Tests in favorites_test.dart verify survival after31 minutes, cache pressure, Agent restart, exact attachment bytes, unpin TTL, archive deletion, local preferences reload and manual removal. Sharing regression remains covered. APK and Agent both need updating for Favorite API.
-
-GitHub repository: https://github.com/LORR01/Mimo-Final-Project — private repository; source อยู่ที่ root ของ repo นี้ ไม่รวม SDK, APK/build หรือข้อมูลส่วนตัวของ Agent.
+ฟอนต์และภาพประกอบมีเงื่อนไขตามแหล่งที่มา โปรดตรวจสอบก่อนนำไปเผยแพร่ต่อ
