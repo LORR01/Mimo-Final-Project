@@ -1,0 +1,10 @@
+* text=auto
+*.dart text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.png binary
+*.webp binary
+*.ttf binary
+*.woff2 binary

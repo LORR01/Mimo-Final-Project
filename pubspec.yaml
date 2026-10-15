@@ -1,0 +1,38 @@
+name: mimo_companion
+description: Native Flutter port of the Mimo display and interaction prototype.
+publish_to: none
+version: 1.1.1+4
+environment:
+  sdk: '>=3.8.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  shared_preferences: ^2.5.3
+  file_picker: ^10.3.10
+  cupertino_icons: ^1.0.8
+  http: ^1.4.0
+  ffi: ^2.1.4
+dev_dependencies:
+  flutter_launcher_icons: ^0.14.4
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/art/
+    - assets/data/seed.json
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
+    - family: MimoDisplay
+      fonts:
+        - asset: assets/fonts/LilitaOne-Regular.ttf
+          weight: 700
+    - family: NotoSansThai
+      fonts:
+        - asset: assets/fonts/NotoSansThai.ttf
+

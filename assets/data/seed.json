@@ -1,0 +1,381 @@
+{
+  "INITIAL_DEVICES": [
+    {
+      "id": "desktop",
+      "name": "Desktop-PC",
+      "online": true,
+      "connection": "Wi-Fi",
+      "specs": "Intel Core i7-13700K · 16 GB DDR5 · RTX 4070",
+      "lastSeen": "ตอนนี้",
+      "readings": {
+        "cpu": 38,
+        "gpu": 42,
+        "ramUsed": 9.6,
+        "ramTotal": 16,
+        "cpuTemp": 46,
+        "gpuTemp": 51
+      },
+      "facts": {
+        "NAME DEVICE": "Desktop-PC",
+        "การเชื่อมต่อ": "Wi-Fi (5 GHz)",
+        "สถานะ": "พร้อมรับคำสั่ง"
+      }
+    },
+    {
+      "id": "studio",
+      "name": "Studio-PC",
+      "online": true,
+      "connection": "LAN",
+      "specs": "AMD Ryzen 9 7900X · 32 GB DDR5 · RTX 4090",
+      "lastSeen": "ตอนนี้",
+      "readings": {
+        "cpu": 64,
+        "gpu": 71,
+        "ramUsed": 22.4,
+        "ramTotal": 32,
+        "cpuTemp": 58,
+        "gpuTemp": 66
+      },
+      "facts": {
+        "NAME DEVICE": "Studio-PC",
+        "การเชื่อมต่อ": "LAN (1000 Mbps)",
+        "สถานะ": "พร้อมรับคำสั่ง"
+      }
+    },
+    {
+      "id": "notebook",
+      "name": "Notebook",
+      "online": false,
+      "connection": "ไม่ได้เชื่อมต่อ",
+      "specs": "Apple M2 · 16 GB Unified",
+      "lastSeen": "เมื่อ 2 ชม. ที่แล้ว",
+      "readings": null,
+      "facts": {
+        "NAME DEVICE": "Notebook",
+        "การเชื่อมต่อ": "ไม่ได้เชื่อมต่อ",
+        "สถานะ": "ออฟไลน์ (ส่งคำสั่งไม่ได้)"
+      }
+    }
+  ],
+  "INITIAL_DEVICE_CONFIGS": {
+    "desktop": {
+      "groups": [
+        {
+          "id": "group-audio",
+          "name": "สตรีมและเสียง",
+          "color": "purple"
+        },
+        {
+          "id": "group-edit",
+          "name": "งานตัดต่อ",
+          "color": "yellow"
+        }
+      ],
+      "buttons": [
+        {
+          "id": "btn-desk-audio-1",
+          "name": "ปิดไมค์ Discord",
+          "note": "Discord Voice",
+          "groupId": "group-audio",
+          "command": "mic",
+          "icon": "mic-off"
+        },
+        {
+          "id": "btn-desk-audio-2",
+          "name": "เล่น / หยุดสื่อ",
+          "note": "Spotify / Media",
+          "groupId": "group-audio",
+          "command": "media",
+          "icon": "play"
+        },
+        {
+          "id": "btn-desk-edit-1",
+          "name": "จับภาพหน้าจอ",
+          "note": "บันทึกภาพด่วน",
+          "groupId": "group-edit",
+          "command": "capture",
+          "icon": "camera"
+        }
+      ]
+    },
+    "studio": {
+      "groups": [
+        {
+          "id": "grp-std-stream",
+          "name": "สตรีมและเสียง",
+          "color": "purple"
+        },
+        {
+          "id": "grp-std-edit",
+          "name": "งานตัดต่อ",
+          "color": "yellow"
+        }
+      ],
+      "buttons": [
+        {
+          "id": "btn-std-obs",
+          "name": "เริ่ม / หยุดอัด",
+          "note": "OBS Studio Recording",
+          "groupId": "grp-std-stream",
+          "command": "custom",
+          "icon": "zap"
+        },
+        {
+          "id": "btn-std-mic",
+          "name": "ปิดไมค์ Studio",
+          "note": "Studio-PC",
+          "groupId": "grp-std-stream",
+          "command": "mic",
+          "icon": "mic-off"
+        },
+        {
+          "id": "btn-std-cap",
+          "name": "จับภาพหน้าจอ",
+          "note": "หน้าต่างตัดต่อ",
+          "groupId": "grp-std-edit",
+          "command": "capture",
+          "icon": "camera"
+        }
+      ]
+    },
+    "notebook": {
+      "groups": [
+        {
+          "id": "grp-nb-sys",
+          "name": "ระบบ",
+          "color": "mint"
+        }
+      ],
+      "buttons": [
+        {
+          "id": "btn-nb-media",
+          "name": "เล่น / หยุด",
+          "note": "ใช้ได้เมื่อออนไลน์",
+          "groupId": "grp-nb-sys",
+          "command": "media",
+          "icon": "play"
+        }
+      ]
+    }
+  },
+  "INITIAL_QUICK_ACTIONS": [
+    {
+      "id": "qa-mic",
+      "name": "MICROPHONE",
+      "subLabel": "OFF",
+      "activeSubLabel": "ON",
+      "icon": "mic",
+      "accentColor": "purple",
+      "command": "mic"
+    },
+    {
+      "id": "qa-media",
+      "name": "MEDIA",
+      "subLabel": "OFF",
+      "activeSubLabel": "PLAYING",
+      "icon": "play",
+      "accentColor": "yellow",
+      "command": "media"
+    }
+  ],
+  "INITIAL_WEEKLY_USAGE": {
+    "totalFormatted": "60 ชม. 0 นาที",
+    "days": [
+      {
+        "key": "Mon",
+        "labelTh": "จันทร์",
+        "hours": 11.5,
+        "percent": 76.6
+      },
+      {
+        "key": "Tue",
+        "labelTh": "อังคาร",
+        "hours": 9.2,
+        "percent": 61.3
+      },
+      {
+        "key": "Wed",
+        "labelTh": "พุธ",
+        "hours": 7.1,
+        "percent": 47.3
+      },
+      {
+        "key": "Thu",
+        "labelTh": "พฤหัสบดี",
+        "hours": 8,
+        "percent": 53.3
+      },
+      {
+        "key": "Fri",
+        "labelTh": "ศุกร์",
+        "hours": 6.4,
+        "percent": 42.6
+      },
+      {
+        "key": "Sat",
+        "labelTh": "เสาร์",
+        "hours": 8.2,
+        "percent": 54.6
+      },
+      {
+        "key": "Sun",
+        "labelTh": "อาทิตย์",
+        "hours": 9.6,
+        "percent": 64
+      }
+    ]
+  },
+  "CLIPBOARD_CATEGORIES": [
+    {
+      "id": "all",
+      "label": "ทั้งหมด",
+      "icon": "clipboard-list"
+    },
+    {
+      "id": "text",
+      "label": "ข้อความ",
+      "icon": "text-quote"
+    },
+    {
+      "id": "link",
+      "label": "ลิงก์",
+      "icon": "link"
+    },
+    {
+      "id": "image",
+      "label": "รูปภาพ",
+      "icon": "image"
+    },
+    {
+      "id": "document",
+      "label": "เอกสาร",
+      "icon": "file-text"
+    },
+    {
+      "id": "spreadsheet",
+      "label": "ตาราง",
+      "icon": "table-2"
+    }
+  ],
+  "INITIAL_CLIPBOARD": {
+    "desktop": [
+      {
+        "id": "clip-d1",
+        "type": "text",
+        "title": "TEXT",
+        "preview": "DESCLIPTION",
+        "meta": "ข้อความ",
+        "time": "เมื่อกี้",
+        "isFavorite": true
+      },
+      {
+        "id": "clip-d2",
+        "type": "text",
+        "title": "TEXT",
+        "preview": "DESCLIPTION",
+        "meta": "ข้อความ",
+        "time": "12 นาที",
+        "isFavorite": false
+      },
+      {
+        "id": "clip-d3",
+        "type": "link",
+        "title": "LINK",
+        "preview": "https://github.com/mimo-companion",
+        "meta": "URL",
+        "time": "1 ชม.",
+        "isFavorite": false
+      }
+    ],
+    "studio": [
+      {
+        "id": "clip-s1",
+        "type": "image",
+        "title": "Render_Final_v2.png",
+        "preview": "3840x2160 · 8.4 MB",
+        "meta": "PNG",
+        "time": "5 นาที",
+        "isFavorite": true
+      },
+      {
+        "id": "clip-s2",
+        "type": "link",
+        "title": "Twitch Stream Dashboard",
+        "preview": "https://dashboard.twitch.tv",
+        "meta": "URL",
+        "time": "20 นาที",
+        "isFavorite": true
+      }
+    ],
+    "notebook": []
+  },
+  "GROUP_COLOR_OPTIONS": [
+    {
+      "id": "blue",
+      "name": "ฟ้า / ม่วงอ่อน",
+      "hex": "#5ea4b0"
+    },
+    {
+      "id": "coral",
+      "name": "พีช / คอรัล",
+      "hex": "#de7f6d"
+    },
+    {
+      "id": "mint",
+      "name": "เขียวมิ้นต์",
+      "hex": "#7db183"
+    },
+    {
+      "id": "yellow",
+      "name": "เหลือง / อำพัน",
+      "hex": "#e5b73d"
+    },
+    {
+      "id": "purple",
+      "name": "ม่วงเข้ม / รอยัล",
+      "hex": "#67367c"
+    }
+  ],
+  "COMMAND_PRESETS": [
+    {
+      "id": "custom",
+      "name": "คำสั่งกำหนดเอง",
+      "icon": "zap"
+    },
+    {
+      "id": "mic",
+      "name": "ปิดไมค์ Discord",
+      "icon": "mic-off"
+    },
+    {
+      "id": "media",
+      "name": "เล่น / หยุดสื่อ",
+      "icon": "play"
+    },
+    {
+      "id": "capture",
+      "name": "จับภาพหน้าจอ",
+      "icon": "camera"
+    }
+  ],
+  "THEME_OPTIONS": [
+    {
+      "id": "light",
+      "title": "แสงเช้า",
+      "subtitle": "อบอุ่น สดใส (Morning Light)",
+      "icon": "sun"
+    },
+    {
+      "id": "dark",
+      "title": "ดาวกลางคืน",
+      "subtitle": "สบายตาในที่มืด (Night Stars)",
+      "icon": "moon"
+    },
+    {
+      "id": "system",
+      "title": "ตามระบบ",
+      "subtitle": "เปลี่ยนอัตโนมัติ (Follow OS)",
+      "icon": "smartphone"
+    }
+  ]
+}
