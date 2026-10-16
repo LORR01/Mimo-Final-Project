@@ -100,3 +100,19 @@ Artifacts and SHA-256: build-evidence.json. Setup: ANDROID_AND_COMMANDS.md and P
 - PC favorites stored durably in .local/agent/favorites, excluded from Git and deliverables. Ordinary clipboard entries remain temporary/memory-only. Favorite cards/local text are the explicit exception retained in app preferences. Attachments remain on the PC and need the PC online when not already cached on the phone.
 - New POST favorite and DELETE clipboard routes retain auth, sharing capability, fresh stable-target checks and bounded strict payloads. Disk writes are serialized; pin success requires durable archive commit. Clipboard expiry/temporary eviction must never delete a Favorite.
 - APK signature v2 verified; com.mimo.mimo_companion versionName1.1.1/versionCode4, minSDK24 targetSDK36. Installer and Agent package are replaced at the existing delivery locations. Physical Android launcher/home screen and new Favorite UI have not been tested on a connected phone.
+
+## Windows automatic startup — 16 October 2026
+
+- Confirmed original failure: Tailscale online and private HTTPS Serve mapping present, but localhost:8765 had no listener and refused the connection. The issue was the stopped desktop Agent.
+- Parsed both PowerShell scripts successfully. Installed the actual per-user Windows Scheduled Task and inspected its at-logon trigger, Interactive logon, Limited run level, unlimited execution duration and IgnoreNew setting. Tailscale service is Automatic on this PC.
+- Stopped only the verified package executable to simulate a crash; the supervisor launched a new Agent process automatically. Repeated with the final script. Verified duplicate task starts leave one listener and the same Agent process.
+- Initial uninstall test exposed an orphaned Agent process. Fixed by recording child PID and creation time; uninstall/update now stop only the matching executable and process creation time. Repeated uninstall left no listener; reinstall started the Agent successfully. No unknown listeners were terminated.
+- Final Agent passed localhost health, certificate-verified private Tailscale HTTPS health, authenticated Tailscale session creation and device inventory retrieval. Credentials, inventory and clipboard contents were not printed or committed. Agent remains running under the startup task.
+- Repacked PC Agent with Enable/Disable Mimo Auto Start launchers and the supervisor script; checked ZIP excludes private state, downloads, APK and signing keys. Updated package hash/size in build-evidence.json. Existing APK and Agent executable are unchanged; Flutter tests/build were not rerun for this Windows startup-only change.
+- Windows reboot/sign-out was not performed to avoid interrupting the user's session. Actual next-sign-in behavior still requires that real-world check; trigger registration, manual task start and process recovery were verified. PC must be awake, signed in and connected to Tailscale.
+
+## Connection diagnostics and public setup guide — 17 October 2026
+
+- Parsed startup, diagnostic and package-build PowerShell scripts; checked local documentation links and git whitespace.
+- Ran new check-agent.ps1 against the installed live Agent/task and Tailscale: package files, task, local health, Tailscale connection, HTTPS proxy and HTTPS health all PASS. No token, clipboard or device inventory printed.
+- Setup documentation now links official Tailscale Run Unattended and persistent Serve behavior, while retaining the Agent's Windows sign-in requirement. Reboot instructions are provided for users; no physical reboot or Android runtime test is claimed in this documentation update.

@@ -25,9 +25,9 @@
     "path": "build/agent/mimo-agent.exe",
     "sha256": "0C932DC56D4DBBBCC2643EAC79D82F7EB34D144D693B395A58EDF9E54737CF52",
     "zip": "build/deliverables/Mimo-PC-Agent.zip",
-    "zipBytes": 19687443,
-    "zipSha256": "BC81F60537304112802E2BCAD8780D74B7D469404413375AA839EAEA3CEE563F",
-    "zipEntries": 77,
+    "zipBytes": 19692958,
+    "zipSha256": "6F9769BF781025ED5C602C7E2B135F463617E3754DD4D16099AD1B68A07A09A4",
+    "zipEntries": 78,
     "privateStateEntries": 0
   },
   "gpuTemperature": "real NVIDIA reading verified; same GPU as reported load",
@@ -39,7 +39,7 @@
     "iOS build and production signing"
   ],
   "iosBuild": "not run: macOS/Xcode required",
-  "githubPush": "not performed",
+  "githubPush": "Source repository uploaded to LORR01/Mimo-Final-Project; private, main",
   "appVersion": "1.1.1+4",
   "loginFix": "real Android whois omits MachineAuthorized; verify owner+stable ID+network map+source IP+key validity; no URL form; coalesced connection/retry",
   "realPhoneIdentityRegression": "passed with real CLI identity using loopback Serve-format headers; caller excluded and PC present; not a physical phone-origin request",
@@ -69,5 +69,31 @@
     "source": "assets/branding/mimo-launcher.png",
     "approved": "concept A; orange glasses; happy; no phone",
     "generator": "built-in imagegen; exported via flutter_launcher_icons0.14.4"
+  },
+  "windowsAutoStart": {
+    "date": "2026-10-16",
+    "mechanism": "Per-user interactive limited Scheduled Task at logon; hidden crash-recovery supervisor",
+    "verified": [
+      "PowerShell parse",
+      "install/start",
+      "Agent crash recovery",
+      "uninstall stops owned Agent",
+      "reinstall",
+      "duplicate-start protection",
+      "localhost health",
+      "certificate-verified Tailscale HTTPS health",
+      "authenticated Tailscale session",
+      "device inventory"
+    ],
+    "windowsRebootTest": "Not performed; installation and process restart tested without rebooting Windows",
+    "apkRebuilt": false
+  },
+  "connectionDiagnostics": {
+    "date": "2026-10-17",
+    "liveChecks": "Package, Scheduled Task, localhost health, Tailscale online, HTTPS mapping and verified HTTPS health all passed",
+    "negativeCase": "Missing package returns FAIL and exit 1",
+    "privacy": "No clipboard, token or device inventory output",
+    "physicalReboot": "Not performed",
+    "androidRuntime": "Not tested in this update"
   }
 }

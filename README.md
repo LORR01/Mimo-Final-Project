@@ -50,7 +50,7 @@ Tailscale เชื่อมอุปกรณ์เข้ากับเคร�
 
 ### 1. เปิด Mimo Agent บน PC
 
-หากมีชุด Mimo PC Agent ให้แตกไฟล์ทั้งชุด แล้วเปิด `Start Mimo Agent.cmd` ค้างไว้ ดูรายละเอียดใน [คู่มือ PC Agent](docs/PC_AGENT_SETUP.md)
+หากมีชุด Mimo PC Agent ให้แตกไฟล์ทั้งชุดไว้ในตำแหน่งถาวร แล้วเปิด `Enable Mimo Auto Start.cmd` หนึ่งครั้ง เพื่อเริ่มทำงานเบื้องหลังทันทีและหลังเข้าสู่ Windows ครั้งถัดไป สำหรับการเปิดแบบชั่วคราว ใช้ `Start Mimo Agent.cmd` และเปิดหน้าต่างนั้นค้างไว้ ดูรายละเอียดใน [คู่มือ PC Agent](docs/PC_AGENT_SETUP.md)
 
 สำหรับการรันจาก source ให้เปิด PowerShell ที่ root ของโปรเจกต์:
 
@@ -61,6 +61,23 @@ dart run tool/mimo_agent.dart --enable-commands --enable-sharing
 ```
 
 Agent รับการเชื่อมต่อที่ `127.0.0.1:8765` โดย `--enable-commands` เปิดการส่งคีย์ลัด และ `--enable-sharing` เปิดการอ่านคลิปบอร์ดกับรับไฟล์ หากต้องการดูสถานะเครื่องอย่างเดียว ให้รันโดยไม่ใส่ทั้งสองตัวเลือก
+
+#### เริ่ม Agent อัตโนมัติหลังเปิดเครื่อง
+
+ในชุด PC Agent เปิด `Enable Mimo Auto Start.cmd` หนึ่งครั้ง ระบบจะเริ่ม Agent ทันทีและทุกครั้งที่เข้าสู่บัญชี Windows เดิม พร้อมเปิดกลับเมื่อ Agent หยุดผิดปกติ ไม่ต้องเปิด terminal ค้างไว้ เปิดทั้งคีย์ลัด คลิปบอร์ด และรับไฟล์ตาม launcher ปกติ
+
+หากติดตั้งจาก source หลัง build Agent แล้ว ใช้คำสั่ง:
+
+```powershell
+./tool/manage-agent-startup.ps1 -Mode Install
+./tool/manage-agent-startup.ps1 -Mode Status
+```
+
+Agent ทำงานในบัญชีผู้ใช้ที่เข้าสู่ Windows เพื่อเข้าถึงคลิปบอร์ดและคีย์ลัด จึงไม่ทำงานก่อน sign-in หรือขณะเครื่องปิด/หลับ เปิด Tailscale ให้เชื่อมต่อเมื่อเริ่มระบบด้วย การตั้งค่า HTTPS Serve คงอยู่แยกจาก Agent
+
+สำหรับ Tailscale บน Windows ให้เปิดเมนูไอคอน Tailscale → Preferences → Run Unattended หากต้องการให้เครือข่ายเชื่อมต่อคงอยู่หลังรีสตาร์ตหรือออกจากบัญชี โดยพิจารณาสิทธิ์เข้าถึงบนเครื่องที่ใช้ร่วมกันก่อนเปิด ดู [คู่มือทางการของ Tailscale](https://tailscale.com/docs/how-to/run-unattended) ตัวเลือกนี้ไม่ทำให้ Mimo Agent ทำงานก่อนเข้าสู่ Windows
+
+ยกเลิกด้วย `Disable Mimo Auto Start.cmd` หรือ `./tool/manage-agent-startup.ps1 -Mode Uninstall` โดยไม่ลบข้อมูล Favorite หรือการตั้งค่า Tailscale หากย้ายโฟลเดอร์ Agent ให้ถอนการเริ่มอัตโนมัติก่อน แล้วติดตั้งใหม่จากตำแหน่งใหม่ Log สำหรับตรวจปัญหาอยู่ใน `.local/agent/logs/`
 
 ### 2. เปิด HTTPS ผ่าน Tailscale
 
@@ -75,6 +92,8 @@ tailscale serve --bg --https=8443 http://127.0.0.1:8765
 
 เปิด URL นี้จากอุปกรณ์ใน Tailscale เพื่อใช้ Flutter Web หรือใช้เป็น gateway สำหรับแอป Android โดยไม่ต้องเปิดบริการออกสู่อินเทอร์เน็ตสาธารณะ
 
+`--bg` ทำให้ Serve กลับมาทำงานเมื่อ Tailscale เริ่มใหม่ตาม [คู่มือ Serve](https://tailscale.com/docs/reference/tailscale-cli/serve) ไม่ต้องรันคำสั่งนี้ทุกครั้งที่เปิดเครื่อง แต่ Agent ต้องเริ่มด้วย Auto Start แยกต่างหาก
+
 ### 3. เชื่อมต่อจากโทรศัพท์
 
 1. ติดตั้ง Mimo APK ที่สร้างสำหรับ gateway ของ PC และแอป Tailscale
@@ -84,6 +103,28 @@ tailscale serve --bg --https=8443 http://127.0.0.1:8765
 5. เลือกเครื่องจากส่วนหัวเพื่อดูสถานะ ใช้คีย์ลัด ส่งไฟล์ หรือดูคลิปบอร์ด
 
 แอป Android ใช้ gateway URL ที่กำหนดตอน build จึงไม่มีช่องให้กรอก URL ในขั้นตอนปกติ หากเปลี่ยน PC ที่เป็น gateway ต้องสร้าง APK ด้วย URL ใหม่ แต่ละ PC เพิ่มเติมต้องมี Agent และ Serve ของตนเองที่พอร์ต 8443 ปัจจุบันยังไม่มีระบบสลับ gateway อัตโนมัติ
+
+## เปิดเครื่องใหม่แล้วเชื่อมต่อไม่ได้
+
+เปิด `Check Mimo Connection.cmd` ในชุด PC Agent เพื่ออ่านผล `PASS`, `WARN` และ `FAIL` หรือรันจาก source หลัง build Agent:
+
+```powershell
+./tool/check-agent.ps1
+```
+
+ตัวตรวจสอบอ่านสถานะเท่านั้น ตรวจไฟล์ Agent, งาน Auto Start, การตอบกลับภายในเครื่อง, Tailscale และ HTTPS โดยไม่แสดง token คลิปบอร์ด หรือรายชื่ออุปกรณ์
+
+| อาการ | วิธีตรวจและแก้ |
+|---|---|
+| กดเชื่อมต่อแล้วเปิดเพียง Tailscale | ตรวจว่า Tailscale เชื่อมต่อแล้ว จากนั้นกลับ Mimo เพื่อค้นหา การเปิด Tailscale ไม่ได้เปิด Agent บน PC |
+| เปิดเครื่องใหม่แล้ว Mimo ใช้ไม่ได้ | เข้าสู่ Windows ด้วยบัญชีที่ติดตั้ง Auto Start ตรวจ Tailscale แล้วเปิดตัวตรวจสอบการเชื่อมต่อ |
+| Local Agent ไม่ตอบ | เปิด `Enable Mimo Auto Start.cmd` เพื่อเริ่ม/ติดตั้งใหม่ และดู log ใน `.local/agent/logs/` |
+| Local ผ่าน แต่ HTTPS ไม่ผ่าน | ตรวจ `tailscale serve status`, การอนุมัติ HTTPS, DNS และนโยบายเข้าถึงของ tailnet |
+| PC ตรวจผ่าน แต่โทรศัพท์ยังเข้าไม่ได้ | ตรวจ VPN/บัญชี Tailscale ของโทรศัพท์ สิทธิ์ถึง PC และ gateway URL ที่ใช้ build APK |
+| ย้ายโฟลเดอร์แล้ว Agent ไม่เปิด | ถอน Auto Start จากโฟลเดอร์เดิม แล้วติดตั้งจากตำแหน่งใหม่ เก็บข้อมูล `.local/agent/` ไว้ด้วย |
+| Access denied ตอนติดตั้งหรืออ่านสถานะ | ใช้ Windows บัญชีเดิม หากนโยบายเครื่องกำหนด ให้เปิด terminal ด้วย Run as administrator ในบัญชีเดิม ไม่ใช้บัญชีผู้ดูแลคนอื่น |
+
+ดู [คู่มือแก้ปัญหาการเชื่อมต่อ](docs/CONNECTION_TROUBLESHOOTING.md) สำหรับการตรวจทีละขั้น การย้าย/อัปเดต Agent และขั้นตอนตรวจหลังรีสตาร์ต
 
 ## การใช้งานแต่ละส่วน
 
@@ -176,6 +217,7 @@ Agent ตรวจตัวตนอุปกรณ์ผ่าน Tailscale แ
 ## เอกสารเพิ่มเติม
 
 - [คู่มือ PC Agent](docs/PC_AGENT_SETUP.md)
+- [แก้ปัญหา Tailscale และ Auto Start](docs/CONNECTION_TROUBLESHOOTING.md)
 - [การเชื่อมต่อและข้อมูลจริง](docs/LIVE_CONNECTION.md)
 - [Android และระบบคีย์ลัด](docs/ANDROID_AND_COMMANDS.md)
 - [ไฟล์ คลิปบอร์ด และการแจ้งเตือน](docs/SHARING_AND_NOTIFICATIONS.md)

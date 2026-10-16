@@ -200,3 +200,18 @@ live_machine_test ใช้ localhost และ .local/agent โดย default �
 ## GitHub handoff — 16 October 2026
 User explicitly authorized uploading this Flutter repository to https://github.com/LORR01/Mimo-Final-Project (private), branch main. This supersedes historical no-commit/no-push status notes. Keep private runtime/clipboard archives, keys and build outputs excluded. GitHub Actions workflow is included; its execution status must be checked separately from local tests.
 
+## Windows automatic startup — 16 October 2026
+
+- Diagnosis: Tailscale was Running/online and its persistent Serve mapping was intact, but no process listened on localhost:8765. The desktop Agent had stopped; the README-only commit did not change APK behavior.
+- `tool/manage-agent-startup.ps1` installs a per-user Scheduled Task with an at-logon trigger, Interactive token, Limited run level, no password, battery operation, no execution timeout, IgnoreNew and scheduler restart-on-failure. Do not replace this with SYSTEM/a noninteractive service: Windows clipboard and SendInput require the signed-in desktop.
+- The task runs a hidden supervisor from the Agent package, starts the compiled Agent with commands and sharing enabled, restarts after process exit, and waits if localhost:8765 is occupied without killing an unknown listener. One named per-user mutex prevents duplicate supervisors. Private logs stay under the existing `.local/agent/logs/`; Favorite data is not relocated or deleted.
+- `tool/build-agent.ps1` now packages the management script and Enable/Disable Mimo Auto Start.cmd. Install starts immediately; Uninstall removes only this user's task. Package location must remain stable; uninstall/reinstall after moving it. The source default points to build/agent, and packaged script defaults to package root.
+- This is a PC-only fix; no APK/UI code changed. Tailscale Serve configuration and authentication remain unchanged. Windows must be signed in, awake, and on Tailscale; this does not wake a powered-off PC or bypass lock-screen restrictions.
+- Verified real install, crash recovery, duplicate-start guard, uninstall/reinstall, localhost/HTTPS health, authenticated Tailscale session and inventory. Fixed an orphan-process issue found during uninstall: a private child record now stores PID plus UTC creation ticks and requires matching executable path before stopping it. Windows was not rebooted/logged out; do not claim a physical reboot test. Agent remains running; package/evidence updated without rebuilding the APK.
+
+## Connection support documentation — 17 October 2026
+
+- README and docs/CONNECTION_TROUBLESHOOTING.md now explain three separate dependencies: Tailscale connectivity, persistent Serve --bg, and interactive per-user Agent Auto Start. Official Tailscale Run Unattended/Serve guidance is linked; unattended network mode does not make the Agent run before desktop sign-in.
+- New tool/check-agent.ps1 is read-only: checks package files, per-user task/path, localhost health, Tailscale Running/online, expected HTTPS mapping and certificate-verified health. It emits summaries without inventory/tokens/clipboard; FAIL exits 1. WARN is not a full failure. Packaged Check Mimo Connection.cmd invokes it. It does not test phone permissions or change Tailscale/system settings.
+- Documented stable package path, same-user elevation on access denied, update/uninstall/Favorite backup, private-log redaction, and each user's required build-time gateway. No automatic gateway discovery across arbitrary tailnets is claimed.
+
