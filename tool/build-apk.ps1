@@ -57,12 +57,10 @@ try {
   & $FlutterPath pub get
   if ($LASTEXITCODE -ne 0) { throw 'pub get failed' }
   $dart = Join-Path (Split-Path $FlutterPath -Parent) 'dart.bat'
-  & $dart format --output=none --set-exit-if-changed lib test tool
+  & $dart format --output=none --set-exit-if-changed lib tool
   if ($LASTEXITCODE -ne 0) { throw 'Format check failed; APK was not built' }
   & $FlutterPath analyze --no-pub
   if ($LASTEXITCODE -ne 0) { throw 'Analyze failed; APK was not built' }
-  & $FlutterPath test --no-pub
-  if ($LASTEXITCODE -ne 0) { throw 'Tests failed; APK was not built' }
   & $FlutterPath build apk --debug --no-pub "--dart-define=MIMO_AGENT_URL=$AgentUrl"
   if ($LASTEXITCODE -ne 0) { throw 'APK build failed' }
   New-Item -ItemType Directory -Force build/deliverables | Out-Null

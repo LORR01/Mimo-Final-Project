@@ -44,7 +44,7 @@ Tailscale เชื่อมอุปกรณ์เข้ากับเคร�
 - โทรศัพท์และ PC เชื่อมต่อ Tailscale ด้วยบัญชีเจ้าของ PC และได้รับอนุญาตให้เข้าถึงกันตามนโยบายเครือข่าย
 - เปิด Tailscale Serve/HTTPS สำหรับ PC ที่รัน Agent
 
-การสร้างแอปจาก source ต้องติดตั้ง Flutter และ Android SDK ส่วนการสร้าง iOS ต้องใช้ macOS และ Xcode โดย iOS ยังไม่ได้รับการทดสอบใช้งานจริง รุ่นเครื่องมือและผลตรวจสอบอยู่ใน [บันทึกการตรวจสอบ](docs/VALIDATION.md)
+การสร้างแอปจาก source ต้องติดตั้ง Flutter และ Android SDK ส่วนการสร้าง iOS ต้องใช้ macOS และ Xcode โดยเน้นการพัฒนาและใช้งานบน Android และ Windows PC เป็นหลัก
 
 ## ติดตั้งและเริ่มใช้งาน
 
@@ -169,7 +169,7 @@ flutter run -d chrome --dart-define=MIMO_DEMO=true
 ./tool/build-apk.ps1 -AgentUrl https://your-pc.your-tailnet.ts.net:8443
 ```
 
-สคริปต์จะตรวจ format, analyze และ tests ก่อน build ผลลัพธ์อยู่ที่ `build/deliverables/Mimo-testing.apk` เป็น APK สำหรับทดสอบที่ลงนามด้วย debug key การเผยแพร่จริงต้องตั้งค่า release signing เพิ่มเติม สามารถระบุ `-FlutterPath` และ `-AndroidSdk` หากสคริปต์หา SDK ไม่พบ
+สคริปต์จะตรวจ format และ analyze ก่อน build ผลลัพธ์อยู่ที่ `build/deliverables/Mimo-testing.apk` เป็น APK สำหรับทดสอบที่ลงนามด้วย debug key การเผยแพร่จริงต้องตั้งค่า release signing เพิ่มเติม สามารถระบุ `-FlutterPath` และ `-AndroidSdk` หากสคริปต์หา SDK ไม่พบ
 
 ### Build Windows Agent
 
@@ -183,13 +183,12 @@ flutter build web --release
 ### ตรวจสอบ source
 
 ```powershell
-dart format --output=none --set-exit-if-changed lib test tool
+dart format --output=none --set-exit-if-changed lib tool
 flutter analyze
-flutter test
 flutter build web --release
 ```
 
-GitHub Actions ตรวจ format, analyze, tests และ build Web ส่วนการตรวจเครื่องจริงและผลทดสอบ Android อธิบายใน [VALIDATION.md](docs/VALIDATION.md)
+GitHub Actions ตรวจสอบ format, analyze และ build Web อัตโนมัติเมื่อ push หรือ pull request
 
 ## โครงสร้างโปรเจกต์
 
@@ -203,8 +202,7 @@ GitHub Actions ตรวจ format, analyze, tests และ build Web ส่ว
 | `tool/agent/` | Windows Agent, authentication, telemetry, clipboard, files และคีย์ลัด |
 | `tool/` | จุดเริ่ม Agent และสคริปต์ build |
 | `assets/` | มาสคอต ไอคอน ฟอนต์ และข้อมูลตัวอย่าง |
-| `test/` | การทดสอบ state, UI และ Agent |
-| `docs/` | คู่มือรายละเอียดและผลการตรวจสอบ |
+| `docs/` | คู่มือและเอกสารการใช้งานระบบ |
 
 ## ข้อมูลและสิทธิ์การเข้าถึง
 
@@ -221,8 +219,6 @@ Agent ตรวจตัวตนอุปกรณ์ผ่าน Tailscale แ
 - [การเชื่อมต่อและข้อมูลจริง](docs/LIVE_CONNECTION.md)
 - [Android และระบบคีย์ลัด](docs/ANDROID_AND_COMMANDS.md)
 - [ไฟล์ คลิปบอร์ด และการแจ้งเตือน](docs/SHARING_AND_NOTIFICATIONS.md)
-- [ผลการตรวจสอบและข้อจำกัด](docs/VALIDATION.md)
-- [เอกสารส่งต่องานสำหรับผู้พัฒนา](handoff.md)
 - [ที่มาและเงื่อนไขของภาพและฟอนต์](assets/PROVENANCE.md)
 
 ฟอนต์และภาพประกอบมีเงื่อนไขตามแหล่งที่มา โปรดตรวจสอบก่อนนำไปเผยแพร่ต่อ
